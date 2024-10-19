@@ -9,6 +9,25 @@ Faker.seed(12345)
 conn = sqlite3.connect('medical_records.db')
 cursor = conn.cursor()
 
+def drop_table():
+    cursor.execute('''
+        DROP TABLE IF EXISTS hospital2_patients;
+    ''')
+
+
+def create_table():
+    cursor.execute('''
+        CREATE TABLE hospital2_patients (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            full_name TEXT NOT NULL,
+            dob TEXT NOT NULL,
+            gender TEXT,
+            contact_info TEXT,
+            email TEXT,
+            medical_history TEXT
+        );
+    ''')
+
 def insert_hardcoded_patients():
     patients = [
         ("John Doe", "1951-02-04", "Male", "71777 Brown Plains Suite 229, Strongborough, NE 29414, 272-337-8973x15193", "benjamin95@example.org", '{"diagnoses": ["Flu", "Asthma", "Migraine"], "procedures": ["X-ray", "Blood test"], "prescriptions": ["Metformin", "Amoxicillin", "Lisinopril"], "treatments": ["Physical therapy"], "tests": ["Thyroid test"]}'),
@@ -94,6 +113,8 @@ def insert_into_hospital2(num_records=500):
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (full_name, dob, gender, contact_info, email, medical_history))
 
+drop_table()
+create_table()
 insert_hardcoded_patients()
 insert_into_hospital2(500)
 
