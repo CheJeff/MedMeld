@@ -16,7 +16,8 @@ TestAgent = Agent(
 
 HospitalAgent = Agent(
     name="hospital1_agent",
-    seed="HospitalOneAgent",  
+    seed="HospitalOneAgent",
+    port=8000,
 )
 
 def read_hospital1_data(patient_name):
@@ -79,9 +80,10 @@ async def send_query(ctx: Context):
 async def handle_response(ctx: Context, sender: str, msg: PatientData):
     print(f"Received medical data from {sender}: {msg.data}")
 
-bureau = Bureau()
+bureau = Bureau(port=8000)
 bureau.add(TestAgent)
 bureau.add(HospitalAgent)
 
 if __name__ == "__main__":
+    print(f"Hospital1Agent Address: {HospitalAgent.address}")
     bureau.run()  
