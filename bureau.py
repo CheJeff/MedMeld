@@ -9,6 +9,7 @@ class PatientQuery(Model):
     patient_name: str
 
 class PatientData(Model):
+    patient_name: str
     data: str
 
 # Test Agent
@@ -33,7 +34,7 @@ Hospital2Agent = Agent(
 
 # Function to read data from hospital1 database
 def read_hospital1_data(patient_name):
-    conn = sqlite3.connect('databases/hospital1_records.db')
+    conn = sqlite3.connect('hospital1_records.db')
     cursor = conn.cursor()
 
     cursor.execute('''
@@ -83,7 +84,7 @@ async def handle_hospital1_query(ctx: Context, sender: str, msg: PatientQuery):
     pass
 # Function to read data from hospital2 database
 def read_hospital2_data(patient_name):
-    conn = sqlite3.connect('databases/hospital2_records.db')
+    conn = sqlite3.connect('hospital2_records.db')
     cursor = conn.cursor()
 
     cursor.execute('''
@@ -116,6 +117,7 @@ def read_hospital2_data(patient_name):
 
     conn.close()
     return common_data
+    pass
 
 # Hospital 2 handles queries
 @Hospital2Agent.on_message(model=PatientQuery)
@@ -153,6 +155,34 @@ async def on_startup(ctx: Context):
             await ctx.send(Hospital2Agent.address, PatientQuery(patient_name=patient_name))
     # Schedule the input loop as a background task
     asyncio.create_task(input_loop())
+
+def combine_patient_data(patient_data_list):
+    combined_patient_data = {}
+    for data_list in patient_data_list:
+        for patient in data_list:
+            for key, value in patient.items():
+                if key not in combined_patient_data:
+                    combined_patient_data[key] = value
+                else:
+                    if isinstance(value, dict):
+                        if not isinstance(combined_patient_data[key], dict):
+                            combined_patient_data[key] = {}
+                        for subkey, subvalue in value.items():
+                            if subkey not in combined_patient_data[key]:
+                                combined_patient_data[key][subkey] = subvalue
+                            else:
+                                if isinstance(subvalue, list):
+                                    combined_list = combined_patient_data[key][subkey] + subvalue
+                                    combined_list = list(set(combined_list))
+                                    combined_patient_data[key][subkey] = combined_list
+                    elif isinstance(value, list):
+                        if not isinstance(combined_patient_data[key], list):
+                            combined_patient_data[key] = []
+                        combined_list = combined_patient_data[key] + value
+                        combined_list = list(set(combined_list))
+                        combined_patient_data[key] = combined_list
+    return combined_patient_data
+
 
 # Create a bureau that contains all agents
 bureau = Bureau(port=8000)  # Single bureau to manage all agents
