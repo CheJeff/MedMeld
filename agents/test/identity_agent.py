@@ -1,16 +1,8 @@
 from uagents import Agent, Context, Model
 from uagents.setup import fund_agent_if_low
+from messages import *
 # from ..identity import ReqCreateAccount, ResCreateAccount, ReqNameToken, ReqAddProvider
 ia_addr = "agent1qvt36c3f90rmp2v2ycw8z6hmgcz3pjk66pvxksgmecspdel2pz9hzakrmgq"
-
-class ReqCreateAccount(Model):
-    name: str
-    password: str
-
-class ResCreateAccount(Model):
-    token: str
-    status: str
-
 
 agent = Agent(
     seed = "Test Agent",
