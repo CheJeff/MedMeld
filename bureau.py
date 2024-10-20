@@ -9,7 +9,6 @@ class PatientQuery(Model):
     patient_name: str
 
 class PatientData(Model):
-    patient_name: str
     data: str
 
 # Test Agent
@@ -72,7 +71,6 @@ def read_hospital1_data(patient_name):
 
     conn.close()
     return common_data
-    pass
 
 # Hospital 1 handles queries
 @HospitalAgent.on_message(model=PatientQuery)
@@ -81,7 +79,7 @@ async def handle_hospital1_query(ctx: Context, sender: str, msg: PatientQuery):
     patient_data = read_hospital1_data(patient_name)
     patient_data_json = json.dumps(patient_data, indent=4)
     await ctx.send(sender, PatientData(data=patient_data_json))
-    pass
+
 # Function to read data from hospital2 database
 def read_hospital2_data(patient_name):
     conn = sqlite3.connect('hospital2_records.db')
@@ -117,7 +115,6 @@ def read_hospital2_data(patient_name):
 
     conn.close()
     return common_data
-    pass
 
 # Hospital 2 handles queries
 @Hospital2Agent.on_message(model=PatientQuery)
@@ -126,16 +123,36 @@ async def handle_hospital2_query(ctx: Context, sender: str, msg: PatientQuery):
     patient_data = read_hospital2_data(patient_name)
     patient_data_json = json.dumps(patient_data, indent=4)
     await ctx.send(sender, PatientData(data=patient_data_json))
-    pass
-async def async_input(prompt):
-    print(prompt, end='', flush=True)
-    loop = asyncio.get_event_loop()
-    return (await loop.run_in_executor(None, sys.stdin.readline)).rstrip('\n')
+#     pass
+# async def async_input(prompt):
+#     print(prompt, end='', flush=True)
+#     loop = asyncio.get_event_loop()
+#     return (await loop.run_in_executor(None, sys.stdin.readline)).rstrip('\n')
+
+merged_data = {}
 
 # Test agent handles responses from hospitals
 @TestAgent.on_message(model=PatientData)
 async def handle_response(ctx: Context, sender: str, msg: PatientData):
-    print(f"\nReceived medical data from {sender}:\n{msg.data}\n")
+    #print(f"\nReceived medical data from {sender}:\n{msg.data}\n")
+    global merged_data
+
+    # Parse the received JSON data
+    received_data = json.loads(msg.data)
+    if not received_data:
+        print(f"\nNo data received from {sender}\n")
+        return
+
+    # Extract patient name (assuming there's only one patient per request)
+    patient_name = received_data[0]["full_name"]
+
+    # Merge received data into the existing dictionary
+    if patient_name not in merged_data:
+        merged_data[patient_name] = received_data
+    else:
+        merged_data[patient_name].extend(received_data)
+
+    print(f"\nUpdated medical data for {patient_name}:\n{json.dumps(merged_data[patient_name], indent=4)}\n")
 
 # Test agent waits for user input and sends queries
 @TestAgent.on_event("startup")
@@ -155,34 +172,6 @@ async def on_startup(ctx: Context):
             await ctx.send(Hospital2Agent.address, PatientQuery(patient_name=patient_name))
     # Schedule the input loop as a background task
     asyncio.create_task(input_loop())
-
-def combine_patient_data(patient_data_list):
-    combined_patient_data = {}
-    for data_list in patient_data_list:
-        for patient in data_list:
-            for key, value in patient.items():
-                if key not in combined_patient_data:
-                    combined_patient_data[key] = value
-                else:
-                    if isinstance(value, dict):
-                        if not isinstance(combined_patient_data[key], dict):
-                            combined_patient_data[key] = {}
-                        for subkey, subvalue in value.items():
-                            if subkey not in combined_patient_data[key]:
-                                combined_patient_data[key][subkey] = subvalue
-                            else:
-                                if isinstance(subvalue, list):
-                                    combined_list = combined_patient_data[key][subkey] + subvalue
-                                    combined_list = list(set(combined_list))
-                                    combined_patient_data[key][subkey] = combined_list
-                    elif isinstance(value, list):
-                        if not isinstance(combined_patient_data[key], list):
-                            combined_patient_data[key] = []
-                        combined_list = combined_patient_data[key] + value
-                        combined_list = list(set(combined_list))
-                        combined_patient_data[key] = combined_list
-    return combined_patient_data
-
 
 # Create a bureau that contains all agents
 bureau = Bureau(port=8000)  # Single bureau to manage all agents
