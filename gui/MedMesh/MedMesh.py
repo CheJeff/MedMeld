@@ -93,9 +93,9 @@ def login_page() -> rx.Component:
                 margin_bottom="30px",
             ),
             rx.box(
-                rx.text("Username", font_size="1.5em", margin_bottom="10px", color="#000000"),
+                rx.text("Name", font_size="1.5em", margin_bottom="10px", color="#000000"),
                 rx.input(
-                    placeholder="Enter your username",
+                    placeholder="Enter your name",
                     width="400px",
                     height="50px",
                     padding="15px",
