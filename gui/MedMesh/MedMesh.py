@@ -66,7 +66,8 @@ class State(rx.State):
 
     # Updated method to generate the answer using the function from gemini.py
     def generate_answer(self):
-        json_input = "" #bureau.getrecords(full_name)
+        json_input = bureau.get_combined_patient_data("John Doe")
+        #print("the json data is:" + json_input)
         try:
             # Call the generate_info function from the gemini module
             self.answer = gemini.generate_info(json_input, self.question)

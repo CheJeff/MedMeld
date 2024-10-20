@@ -123,18 +123,13 @@ async def handle_hospital2_query(ctx: Context, sender: str, msg: PatientQuery):
     patient_data = read_hospital2_data(patient_name)
     patient_data_json = json.dumps(patient_data, indent=4)
     await ctx.send(sender, PatientData(data=patient_data_json))
-#     pass
-# async def async_input(prompt):
-#     print(prompt, end='', flush=True)
-#     loop = asyncio.get_event_loop()
-#     return (await loop.run_in_executor(None, sys.stdin.readline)).rstrip('\n')
 
+# A dictionary to store responses by patient name
 merged_data = {}
 
 # Test agent handles responses from hospitals
 @TestAgent.on_message(model=PatientData)
 async def handle_response(ctx: Context, sender: str, msg: PatientData):
-    #print(f"\nReceived medical data from {sender}:\n{msg.data}\n")
     global merged_data
 
     # Parse the received JSON data
@@ -154,6 +149,12 @@ async def handle_response(ctx: Context, sender: str, msg: PatientData):
 
     print(f"\nUpdated medical data for {patient_name}:\n{json.dumps(merged_data[patient_name], indent=4)}\n")
 
+async def async_input(prompt):
+    print(prompt, end='', flush=True)
+    loop = asyncio.get_event_loop()
+    return (await loop.run_in_executor(None, sys.stdin.readline)).rstrip('\n')
+
+
 # Test agent waits for user input and sends queries
 @TestAgent.on_event("startup")
 async def on_startup(ctx: Context):
@@ -172,6 +173,14 @@ async def on_startup(ctx: Context):
             await ctx.send(Hospital2Agent.address, PatientQuery(patient_name=patient_name))
     # Schedule the input loop as a background task
     asyncio.create_task(input_loop())
+
+# Function to return the combined patient data
+def get_combined_patient_data(patient_name):
+    global merged_data
+    if patient_name in merged_data:
+        return json.dumps(merged_data[patient_name], indent=4)
+    else:
+        return json.dumps([])
 
 # Create a bureau that contains all agents
 bureau = Bureau(port=8000)  # Single bureau to manage all agents
