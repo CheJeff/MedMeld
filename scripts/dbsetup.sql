@@ -10,7 +10,8 @@ CREATE TABLE Patients (
 
 CREATE TABLE Providers (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(255) UNIQUE NOT NULL
+	name VARCHAR(255) UNIQUE NOT NULL,
+    faddr VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE PatientProviders (
@@ -24,9 +25,9 @@ CREATE TABLE PatientProviders (
 INSERT INTO Patients (name, password) VALUES
 	('Jone Doe','D0pNC0ZGeQPhKAeWzlHyUsWtG3fW0peHcaXTzaPXz5Bh2WydUXVup1T3Oqvl9DPeAYlY9nLuM07hI4CiVNMGPsfXmJCjzXuu6rJ_N9kL1GJki1fPpi0LmlheUPsy0O0zQOFOXiAOg5TbDmzeJvAbQqKuRIz5q9kH4759VT-W3n7NPbBkkGmNbFhTUjaMjc6P_mnMo5oJ50JdbBr8R_8b08z3QLdmSg5DaJ2j7pY8kcJhjDZ7yW9430lrXCZTGXibxE1Vp3qjwklcfKDJjWWBnkSuXXYxGjCGD65vaiFrGg3RsXl5JViOg8Q5zAJjkJ2x_udH9Uo17AJL0KXbXyThv-T5ybrqu7vuW3uotuIB1H6DV4XdbPWNhD8VL1OoqPNU');
 
-INSERT INTO Providers (name) VALUES
-	('Health Primary'),
-	('Health Secondary');
+INSERT INTO Providers (name, faddr) VALUES
+	('Health Primary', 'agent1qgx089sfn6v8mg830z94spj9rg2y4pcql9sfjnqtg33zu3pezqxpq282u3a'),
+	('Health Secondary', 'agent1qw54sfxtfpmlgeay0hp480te5v3zy3lhwyw884q9skuje0xdygce5rww222');
 
 INSERT INTO PatientProviders (patient_id, provider_id)
 SELECT Patients.id, Providers.id
