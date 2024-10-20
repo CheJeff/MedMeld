@@ -64,9 +64,6 @@ class State(rx.State):
         if self.logged_in:
             return rx.redirect("/profile")
 
-    def process_json_data(self, json_input):
-        print(json_input)
-
     # Updated method to generate the answer using the function from gemini.py
     def generate_answer(self):
         json_input = "" #bureau.getrecords(full_name)
