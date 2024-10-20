@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/sulaiman/CalHacks11.0/MedMesh/reflex-env"
+set -gx VIRTUAL_ENV "/home/gabriel_gonzalez29/CalHacks11.0/MedMeld/reflex-env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
