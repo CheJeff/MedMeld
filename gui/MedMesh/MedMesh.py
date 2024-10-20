@@ -1,5 +1,16 @@
+import sys
+import os
+
+# Add the path where gemini.py is located to sys.path
+gemini_path = '/home/gabriel_gonzalez29/CalHacks11.0/MedMeld'
+if gemini_path not in sys.path:
+    sys.path.append(gemini_path)
+
 import reflex as rx
+import gemini  # Now Python should be able to find gemini.py
 from rxconfig import config
+
+# Rest of your code...
 
 
 class State(rx.State):
@@ -57,11 +68,14 @@ class State(rx.State):
         if self.logged_in:
             return rx.redirect("/profile")
 
-    # New method to generate the answer
+    # Updated method to generate the answer using the function from gemini.py
     def generate_answer(self):
-        # For demonstration purposes, we'll just echo the question
-        self.answer = f"Answer to your question: {self.question}"
-
+        json_input = ""  # Placeholder since JSON is pending
+        try:
+            # Call the generate_info function from the gemini module
+            self.answer = gemini.generate_info(json_input, self.question)
+        except Exception as e:
+            self.answer = f"An error occurred: {str(e)}"
 
 # Function to render the login page
 def login_page() -> rx.Component:
@@ -147,7 +161,6 @@ def login_page() -> rx.Component:
         bg="#ADD8E6",
     )
 
-
 # Function to render the profile page after login
 def profile_page() -> rx.Component:
     return rx.container(
@@ -203,15 +216,16 @@ def profile_page() -> rx.Component:
         position="relative",  # To ensure the log out button stays in place
     )
 
-
-# Function to render the record page with two text boxes side by side
+# Function to render the record page with AI integration
 def record_page() -> rx.Component:
     return rx.container(
         rx.box(
             # Two text boxes side by side
             rx.box(
                 # Left box: Input for the question
-                rx.text("Enter your question:", font_size="1.2em", margin_bottom="10px"),
+                rx.text(
+                    "Enter your question:", font_size="1.2em", margin_bottom="10px"
+                ),
                 rx.text_area(
                     placeholder="Type your question here...",
                     width="400px",
@@ -284,25 +298,13 @@ def record_page() -> rx.Component:
         position="relative",
     )
 
-
 # Main function to render the index page
 def index() -> rx.Component:
     # Always return the login page component
     return login_page()
-
 
 # Create the Reflex app and add the pages
 app = rx.App()
 app.add_page(index, route="/", on_load=State.index_on_load)
 app.add_page(profile_page, route="/profile", on_load=State.on_load)
 app.add_page(record_page, route="/record", on_load=State.on_load)
-
-
-
-
-
-
-
-
-
-
