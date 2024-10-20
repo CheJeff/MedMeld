@@ -1,4 +1,5 @@
 from uagents import Model
+from typing import TypedDict
 
 class Token:
     _patient_id: int
@@ -48,3 +49,24 @@ class ResNameToken(Model):
     token: str
     name: str
     status: str
+
+
+class MedicalHistory(TypedDict):
+    diagnoses: list[str]  # Diagnosis
+    procedures: list[str]  # Procedures
+    prescriptions: list[str]  # Prescriptions
+    treatments: list[str]  # Treatments
+    tests: list[str]  # Tests
+
+
+class PatientQuery(Model):
+    patient_name: str
+
+class PatientData(Model):
+    full_name: str
+    dob: str
+    gender: str
+    address: str
+    phone_number: str
+    email: str
+    medical_history: MedicalHistory

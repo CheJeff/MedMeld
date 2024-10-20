@@ -1,14 +1,8 @@
 from uagents import Agent, Context, Model
 from uagents.setup import fund_agent_if_low
+from messages import PatientQuery, PatientData
 import sqlite3
 import json
-
-# Define models
-class PatientQuery(Model):
-    patient_name: str
-
-class PatientData(Model):
-    data: str
 
 # Hospital 1 Agent
 HospitalAgent = Agent(
@@ -18,7 +12,7 @@ HospitalAgent = Agent(
     endpoint=["http://127.0.0.1:7701/submit"]
 )
 
-fund_agent_if_low(HospitalAgent)
+fund_agent_if_low(HospitalAgent.wallet.address())  # type: ignore
 
 # Function to read data from hospital1 database
 def read_hospital1_data(patient_name: str):
@@ -48,26 +42,25 @@ def read_hospital1_data(patient_name: str):
             "treatments": patient[10].split(", ") if patient[10] else [],  # Treatments
             "tests": patient[11].split(", ") if patient[11] else []  # Tests
         }
-        common_data.append({
-            "full_name": full_name,
-            "dob": dob,
-            "gender": gender,
-            "address": address,
-            "phone_number": phone_number,
-            "email": email,
-            "medical_history": medical_history
-        })
+        common_data.append(PatientData(
+            full_name=full_name,
+            dob=dob,
+            gender=gender,
+            address=address,
+            phone_number=phone_number,
+            email=email,
+            medical_history=medical_history  # type: ignore
+        ))
 
     conn.close()
-    return common_data
+    return common_data[0]
 
 # Hospital 1 handles queries
 @HospitalAgent.on_message(model=PatientQuery)
 async def handle_hospital1_query(ctx: Context, sender: str, msg: PatientQuery):
     patient_name = msg.patient_name
     patient_data = read_hospital1_data(patient_name)
-    patient_data_json = json.dumps(patient_data, indent=4)
-    await ctx.send(sender, PatientData(data=patient_data_json))
+    await ctx.send(sender, patient_data)
 
 if __name__ == "__main__":
     print(f"Hospital1Agent Address: {HospitalAgent.address}")

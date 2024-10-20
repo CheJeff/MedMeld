@@ -1,14 +1,8 @@
 from uagents import Agent, Context, Model
 from uagents.setup import fund_agent_if_low
+from messages import PatientQuery, PatientData, MedicalHistory
 import sqlite3
 import json
-
-# Define models
-class PatientQuery(Model):
-    patient_name: str
-
-class PatientData(Model):
-    data: str
 
 # Hospital 2 Agent
 Hospital2Agent = Agent(
@@ -18,7 +12,7 @@ Hospital2Agent = Agent(
     endpoint=["http://127.0.0.1:7702/submit"]
 )
 
-fund_agent_if_low(Hospital2Agent)
+fund_agent_if_low(Hospital2Agent.wallet.address())
 
 # Function to read data from hospital2 database
 def read_hospital2_data(patient_name):
@@ -41,28 +35,27 @@ def read_hospital2_data(patient_name):
         address = contact_info[0] if len(contact_info) > 0 else ""
         phone_number = contact_info[1] if len(contact_info) > 1 else ""
         email = patient[4]  # Email
-        medical_history = json.loads(patient[5])  # Parse JSON-like medical history field
+        medical_history: MedicalHistory = json.loads(patient[5])  # Parse JSON-like medical history field
 
-        common_data.append({
-            "full_name": full_name,
-            "dob": dob,
-            "gender": gender,
-            "address": address,
-            "phone_number": phone_number,
-            "email": email,
-            "medical_history": medical_history
-        })
+        common_data.append(PatientData(
+            full_name = full_name,
+            dob = dob,
+            gender = gender,
+            address = address,
+            phone_number = phone_number,
+            email = email,
+            medical_history = medical_history
+        ))
 
     conn.close()
-    return common_data
+    return common_data[0]
 
 # Hospital 2 handles queries
 @Hospital2Agent.on_message(model=PatientQuery)
 async def handle_hospital2_query(ctx: Context, sender: str, msg: PatientQuery):
     patient_name = msg.patient_name
     patient_data = read_hospital2_data(patient_name)
-    patient_data_json = json.dumps(patient_data, indent=4)
-    await ctx.send(sender, PatientData(data=patient_data_json))
+    await ctx.send(sender, patient_data)
 
 if __name__ == "__main__":
     print(f"Hospital2Agent Address: {Hospital2Agent.address}")
