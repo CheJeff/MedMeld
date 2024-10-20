@@ -6,6 +6,5 @@
 __pycache__/
 assets/external/
 reflex-env/bin/activate
-reflex-env/bin/activate
 reflex-env/bin/activate.csh
 reflex-env/bin/activate.fish
