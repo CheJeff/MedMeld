@@ -8,10 +8,8 @@ if gemini_path not in sys.path:
 
 import reflex as rx
 import gemini  # Now Python should be able to find gemini.py
+import bureau
 from rxconfig import config
-
-# Rest of your code...
-
 
 class State(rx.State):
     """The app state."""
@@ -37,13 +35,11 @@ class State(rx.State):
     # Action for the login button
     def login(self):
         # Check if the username and password are correct
-        if (
-            self.username == self.correct_username
-            and self.password == self.correct_password
-        ):
+        if (self.username == self.correct_username
+            and self.password == self.correct_password):
+
             self.logged_in = True
-            # Redirect to profile page upon successful login
-            return rx.redirect("/profile")
+            return rx.redirect("/profile") # Redirect to profile page upon successful login
         else:
             # If credentials are wrong, show an error message
             self.login_error = "Invalid username or password."
@@ -68,9 +64,12 @@ class State(rx.State):
         if self.logged_in:
             return rx.redirect("/profile")
 
+    def process_json_data(self, json_input):
+        print(json_input)
+
     # Updated method to generate the answer using the function from gemini.py
     def generate_answer(self):
-        json_input = ""  # Placeholder since JSON is pending
+        json_input = "" #bureau.getrecords(full_name)
         try:
             # Call the generate_info function from the gemini module
             self.answer = gemini.generate_info(json_input, self.question)
