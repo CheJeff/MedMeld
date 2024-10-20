@@ -5,7 +5,7 @@ from rxconfig import config
 class State(rx.State):
     """The app state."""
 
-    # User data (for the example, hardcoded username and password)
+    # User data
     username: str = ""
     password: str = ""
 
@@ -19,10 +19,17 @@ class State(rx.State):
     # Message to display login errors
     login_error: str = ""
 
+    # New attributes for question and answer
+    question: str = ""
+    answer: str = ""
+
     # Action for the login button
     def login(self):
         # Check if the username and password are correct
-        if self.username == self.correct_username and self.password == self.correct_password:
+        if (
+            self.username == self.correct_username
+            and self.password == self.correct_password
+        ):
             self.logged_in = True
             # Redirect to profile page upon successful login
             return rx.redirect("/profile")
@@ -50,6 +57,11 @@ class State(rx.State):
         if self.logged_in:
             return rx.redirect("/profile")
 
+    # New method to generate the answer
+    def generate_answer(self):
+        # For demonstration purposes, we'll just echo the question
+        self.answer = f"Answer to your question: {self.question}"
+
 
 # Function to render the login page
 def login_page() -> rx.Component:
@@ -57,15 +69,15 @@ def login_page() -> rx.Component:
         rx.box(
             rx.heading(
                 "Welcome to MedMesh!",
-                font_size="35px",  # Large title size
-                color="black",
-                margin_bottom="10px",  # Small space below title
+                font_size="35px",
+                color="#000000",
+                margin_bottom="10px",
             ),
             rx.text(
                 "Manage your medical records securely and conveniently.",
-                size="4",  # Regular description size
-                color="black",
-                margin_bottom="20px",  # Space before the input fields
+                size="4",
+                color="#000000",
+                margin_bottom="20px",
             ),
             rx.box(
                 rx.text("Username", font_size="1.2em", margin_bottom="10px"),
@@ -75,8 +87,16 @@ def login_page() -> rx.Component:
                     padding="10px",
                     value=State.username,
                     on_change=State.set_username,
+                    bg="#FFFFFF",
+                    color="#000000",
+                    border="1px solid #000000",
                 ),
-                rx.text("Password", font_size="1.2em", margin_bottom="10px", margin_top="20px"),
+                rx.text(
+                    "Password",
+                    font_size="1.2em",
+                    margin_bottom="10px",
+                    margin_top="20px",
+                ),
                 rx.input(
                     placeholder="Enter your password",
                     width="300px",
@@ -84,43 +104,47 @@ def login_page() -> rx.Component:
                     type="password",
                     value=State.password,
                     on_change=State.set_password,
+                    bg="#FFFFFF",
+                    color="#000000",
+                    border="1px solid #000000",
                 ),
                 rx.button(
                     "Login",
-                    bg="lightblue",
-                    border="2px solid black",
+                    bg="#ADD8E6",
+                    border="2px solid #000000",
                     padding="10px",
                     margin_top="20px",
                     on_click=State.login,
-                    _hover={"bg": "lightblue", "opacity": 0.8},  # Slight darken on hover
+                    _hover={"bg": "#ADD8E6", "opacity": 0.8},
                 ),
-                rx.text(
-                    State.login_error,
-                    color="red",
-                    margin_top="10px"
-                ),
-                margin_bottom="30px",  # Space between the form and the links
+                rx.text(State.login_error, color="#FF0000", margin_top="10px"),
+                margin_bottom="30px",
             ),
             rx.box(
-                rx.link("Forgot your password?", href="/forgot-password", color="blue", margin_bottom="10px"),
-                rx.link("Create Account", href="/create-account", color="blue"),
+                rx.link(
+                    "Forgot your password?",
+                    href="/forgot-password",
+                    color="#0000FF",
+                    margin_bottom="10px",
+                ),
+                rx.link("Create Account", href="/create-account", color="#0000FF"),
                 display="flex",
                 flex_direction="column",
-                align_items="center"
+                align_items="center",
             ),
             align_items="center",
             justify_content="center",
             padding="40px",
-            border="2px solid black",
+            border="2px solid #000000",
             border_radius="10px",
             width="400px",
-            bg="white"
+            bg="#FFFFFF",
         ),
         display="flex",
         justify_content="center",
         align_items="center",
         height="100vh",
-        bg="lightblue"
+        bg="#ADD8E6",
     )
 
 
@@ -132,8 +156,8 @@ def profile_page() -> rx.Component:
             rx.box(
                 rx.button(
                     "[Log Out]",
-                    bg="white",
-                    color="blue",
+                    bg="#FFFFFF",
+                    color="#0000FF",
                     border="none",
                     on_click=State.logout,
                     _hover={"text_decoration": "underline"},
@@ -144,66 +168,120 @@ def profile_page() -> rx.Component:
             ),
             # Profile info
             rx.box(
-                bg="gray",  # Placeholder for profile picture
+                bg="#CCCCCC",  # Placeholder for profile picture
                 width="150px",
                 height="150px",
                 border_radius="50%",  # Make it circular
-                margin_bottom="20px"
+                margin_bottom="20px",
             ),
-            rx.text(f"Hi {State.correct_username[:-3]}!", font_size="2em", margin_bottom="20px"),  # Shows "Hi Jane!"
+            rx.text(
+                f"Hi {State.correct_username[:-3]}!",
+                font_size="2em",
+                margin_bottom="20px",
+            ),  # Shows "Hi Jane!"
             rx.button(
                 "View Record",
-                bg="lightblue",
-                border="2px solid black",
+                bg="#ADD8E6",
+                border="2px solid #000000",
                 padding="10px",
                 on_click=lambda: rx.redirect("/record"),  # Redirect to record page
-                _hover={"bg": "lightblue", "opacity": 0.8},  # Slight darken on hover
+                _hover={"bg": "#ADD8E6", "opacity": 0.8},
             ),
             align_items="center",
             justify_content="center",
             padding="40px",
-            border="2px solid black",
+            border="2px solid #000000",
             border_radius="10px",
             width="400px",
-            bg="white"
+            bg="#FFFFFF",
         ),
         display="flex",
         justify_content="center",
         align_items="center",
         height="100vh",
-        bg="lightblue",
-        position="relative"  # To ensure the log out button stays in place
+        bg="#ADD8E6",
+        position="relative",  # To ensure the log out button stays in place
     )
 
 
-# Function to render the record page
+# Function to render the record page with two text boxes side by side
 def record_page() -> rx.Component:
     return rx.container(
         rx.box(
-            rx.heading("Your Medical Records", font_size="30px", margin_bottom="20px"),
-            rx.text("Medical Record 1: Placeholder for actual data.", margin_bottom="10px"),
-            rx.text("Medical Record 2: Placeholder for actual data.", margin_bottom="10px"),
-            rx.button(
-                "Back to Profile",
-                bg="lightblue",
-                border="2px solid black",
-                padding="10px",
-                on_click=lambda: rx.redirect("/profile"),  # Go back to profile
-                _hover={"bg": "lightblue", "opacity": 0.8},  # Slight darken on hover
+            # Two text boxes side by side
+            rx.box(
+                # Left box: Input for the question
+                rx.text("Enter your question:", font_size="1.2em", margin_bottom="10px"),
+                rx.text_area(
+                    placeholder="Type your question here...",
+                    width="400px",
+                    height="200px",
+                    padding="10px",
+                    value=State.question,
+                    on_change=State.set_question,
+                    bg="#FFFFFF",
+                    color="#000000",
+                    border="1px solid #000000",
+                ),
+                rx.button(
+                    "Submit",
+                    bg="#ADD8E6",
+                    border="2px solid #000000",
+                    padding="10px",
+                    margin_top="10px",
+                    on_click=State.generate_answer,
+                    _hover={"bg": "#ADD8E6", "opacity": 0.8},
+                ),
+                display="flex",
+                flex_direction="column",
+                align_items="center",
+                margin_right="20px",
             ),
-            align_items="center",
+            rx.box(
+                # Right box: Output for the answer
+                rx.text("Answer:", font_size="1.2em", margin_bottom="10px"),
+                rx.text_area(
+                    placeholder="Answer will appear here...",
+                    width="400px",
+                    height="200px",
+                    padding="10px",
+                    value=State.answer,
+                    is_read_only=True,
+                    bg="#FFFFFF",
+                    color="#000000",
+                    border="1px solid #000000",
+                ),
+                display="flex",
+                flex_direction="column",
+                align_items="center",
+            ),
+            display="flex",
+            flex_direction="row",
+            align_items="flex-start",
             justify_content="center",
             padding="40px",
-            border="2px solid black",
+            border="2px solid #000000",
             border_radius="10px",
-            width="500px",
-            bg="white"
+            bg="#FFFFFF",
+        ),
+        # Back to Profile button
+        rx.button(
+            "Back to Profile",
+            bg="#ADD8E6",
+            border="2px solid #000000",
+            padding="10px",
+            on_click=lambda: rx.redirect("/profile"),
+            _hover={"bg": "#ADD8E6", "opacity": 0.8},
+            position="absolute",
+            top="20px",
+            left="20px",
         ),
         display="flex",
         justify_content="center",
         align_items="center",
         height="100vh",
-        bg="lightblue"
+        bg="#ADD8E6",
+        position="relative",
     )
 
 
