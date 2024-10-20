@@ -5,7 +5,7 @@ import random
 fake = Faker()
 Faker.seed(329)
 
-conn = sqlite3.connect(r'C:\Users\gabri\Downloads\sqlite-tools-win-x64-3460100\test.db')
+conn = sqlite3.connect('hospital1_records.db')
 cursor = conn.cursor()
 
 cursor.execute('''

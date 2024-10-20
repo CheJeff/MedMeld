@@ -1,1 +1,5 @@
 .DS_Store
+hospital1_records.db
+hospital2_records.db
+private_keys.json
+venv/
