@@ -449,6 +449,9 @@ def create_account_page() -> rx.Component:
 
 # Function to render the healthcare providers page after signup
 def healthcare_providers_page() -> rx.Component:
+    def submit_healthcare_provider():
+        return rx.redirect("/")
+    
     return rx.container(
         rx.box(
             # Greeting message
@@ -485,6 +488,7 @@ def healthcare_providers_page() -> rx.Component:
                 color="#FFFFFF",
                 _hover={"bg": "#218838", "opacity": 0.8},
                 margin_top="20px",
+                on_click=submit_healthcare_provider,
             ),
             align_items="center",
             justify_content="center",
