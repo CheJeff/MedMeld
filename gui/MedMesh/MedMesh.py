@@ -8,7 +8,6 @@ if gemini_path not in sys.path:
 
 import reflex as rx
 import gemini  # Now Python should be able to find gemini.py
-import bureau
 from rxconfig import config
 
 class State(rx.State):
