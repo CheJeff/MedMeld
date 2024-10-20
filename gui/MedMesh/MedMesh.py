@@ -204,7 +204,7 @@ def profile_page() -> rx.Component:
                 text_align="center",
             ),  # Shows "Hi Jane!" with larger font size
             rx.button(
-                "Query Record",
+                "View Record",
                 bg="#ADD8E6",
                 border="2px solid #000000",
                 padding="25px",
@@ -503,6 +503,44 @@ def healthcare_providers_page() -> rx.Component:
     )
 
 
+
+# Function to render the forgot password page
+def forgot_password_page() -> rx.Component:
+    return rx.container(
+        rx.box(
+            rx.heading(
+                "Enter Email",
+                font_size="2.5em",
+                color="#000000",
+                margin_bottom="20px",
+            ),
+            rx.input(
+                placeholder="Enter your email",
+                width="400px",
+                height="50px",
+                padding="15px",
+                font_size="1.2em",
+                bg="#FFFFFF",
+                color="#000000",
+                border="2px solid #000000",
+            ),
+            align_items="center",
+            justify_content="center",
+            padding="40px",
+            border="2px solid #000000",
+            border_radius="15px",
+            width="500px",
+            bg="#FFFFFF",
+            position="relative",
+        ),
+        display="flex",
+        justify_content="center",
+        align_items="center",
+        height="100vh",
+        bg="#ADD8E6",
+    )
+
+
 # Updated Main function to render the index page and add new create account page
 def index() -> rx.Component:
     # Always return the login page component
@@ -510,9 +548,11 @@ def index() -> rx.Component:
 
 # Create the Reflex app and add the pages
 app = rx.App()
-# Add the new page to the app
+# Add the new pages to the app
 app.add_page(create_account_page, route="/create-account")
 app.add_page(healthcare_providers_page, route="/healthcare-providers")
 app.add_page(index, route="/", on_load=State.index_on_load)
 app.add_page(profile_page, route="/profile", on_load=State.on_load)
 app.add_page(record_page, route="/record", on_load=State.on_load)
+app.add_page(forgot_password_page, route="/forgot-password")
+
