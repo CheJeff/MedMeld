@@ -3,3 +3,4 @@ python-dotenv
 reflex==0.6.3
 faker
 uagents
+psycopg[binary,pool]
