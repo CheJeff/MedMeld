@@ -20,10 +20,10 @@ fund_agent_if_low(agent.wallet.address())  # type: ignore
 def hashpass(passwd: str) -> str:
     # generate salt
     bts = random.randbytes(256)
-    return base64.encodebytes(bts + hashlib.sha256(bts + passwd.encode()).digest()).decode()
+    return base64.urlsafe_b64encode(bts + hashlib.sha256(bts + passwd.encode()).digest()).decode()
 
 def verifypass(passwd: str, hash: str) -> bool:
-    hashbts = base64.decodebytes(hash.encode())
+    hashbts = base64.urlsafe_b64decode(hash.encode())
     return hashbts[256:] == hashlib.sha256(hashbts[:256] + passwd.encode()).digest()
 
 @agent.on_message(model=ReqCreateAccount)  #, replies=ResCreateAccount)
@@ -52,14 +52,17 @@ async def sign_in(ctx: Context, sender: str, msg: ReqSignIn):
     print("\t",sender)
     print("\t",msg)
     with psycopg.connect(environ["PGSQL_CONSTR"], row_factory=dict_row) as connection:
-        er = connection.execute("SELECT password FROM Patients WHERE name = %s;", (msg.name,))
-        pswd: bytes | None = None
+        er = connection.execute("SELECT id, password FROM Patients WHERE name = %s;", (msg.name,))
+        pswd: str | None = None
+        id: int | None = None
         for row in er:
             pswd = row["password"]
+            id = row["id"]
+            ctx.logger.info(f"Sign In found for {msg.name}({id}): '{pswd}'")
         if pswd is None or not verifypass(msg.password, pswd):
-            await ctx.send(sender, ResSignIn(token="", status="credentials rejected"))
+            await ctx.send(sender, ResSignIn(token=Token(-1).to_str(), status="credentials rejected"))
             return
-        await ctx.send(sender, ResSignIn(token=f"{msg.name}", status="ok"))
+        await ctx.send(sender, ResSignIn(token=Token(id).to_str(), status="ok"))
         return
 
 @agent.on_message(model=ReqAddProvider)
@@ -68,7 +71,7 @@ async def add_providers(ctx: Context, sender: str, msg: ReqAddProvider):
     print("\t",sender)
     print("\t",msg)
     with psycopg.connect(environ["PGSQL_CONSTR"]) as connection:
-        connection.execute("INSERT INTO PatientProviders (patient_id, provider_id) SELECT %s, id FROM Provider WHERE name = ANY(%s);", (msg.providers,))
+        connection.execute("INSERT INTO PatientProviders (patient_id, provider_id) SELECT %s, id FROM Providers WHERE name = ANY(%s);", (Token.from_str(msg.token).patient_id, msg.providers,))
         await ctx.send(sender, ResAddProvider(token=msg.token, status="ok"))
 
 @agent.on_message(model=ReqNameToken)

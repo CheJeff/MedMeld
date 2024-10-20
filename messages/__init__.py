@@ -1,16 +1,21 @@
 from uagents import Model
 
 class Token:
-    patient_id: int
+    _patient_id: int
     def __init__(self, pid: int) -> None:
-        self.patient_id = pid
+        self._patient_id = pid
+
+    @property
+    def patient_id(self) -> str:
+        return self._patient_id
+
+    def to_str(self) -> str:
+        return str(self._patient_id).rjust(9, "0")
 
     @classmethod
     def from_str(cls, parse: str):
         return cls(int(parse))
 
-    def to_str(self) -> str:
-        return str(self.patient_id).rjust(9, "0")
 
 class ReqCreateAccount(Model):
     name: str
