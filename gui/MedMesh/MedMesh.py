@@ -74,82 +74,95 @@ class State(rx.State):
         except Exception as e:
             self.answer = f"An error occurred: {str(e)}"
 
+    def submit_signup(self):
+        return rx.redirect("/healthcare-providers")
+
 # Function to render the login page
 def login_page() -> rx.Component:
     return rx.container(
         rx.box(
             rx.heading(
-                "Welcome to MedMesh!",
-                font_size="35px",
+                "Welcome to MedMeld!",
+                font_size="43px",
                 color="#000000",
-                margin_bottom="10px",
+                margin_bottom="30px",
             ),
             rx.text(
-                "Manage your medical records securely and conveniently.",
-                size="4",
+                "Your personal health assistant to help you understand and access your medical records at your fingertips.",
+                font_size="1.2em",
                 color="#000000",
-                margin_bottom="20px",
+                margin_bottom="30px",
             ),
             rx.box(
-                rx.text("Username", font_size="1.2em", margin_bottom="10px"),
+                rx.text("Username", font_size="1.5em", margin_bottom="10px", color="#000000"),
                 rx.input(
                     placeholder="Enter your username",
-                    width="300px",
-                    padding="10px",
+                    width="400px",
+                    height="50px",
+                    padding="15px",
+                    font_size="1.2em",
                     value=State.username,
                     on_change=State.set_username,
                     bg="#FFFFFF",
                     color="#000000",
-                    border="1px solid #000000",
+                    border="2px solid #000000",
                 ),
                 rx.text(
                     "Password",
-                    font_size="1.2em",
+                    font_size="1.5em",
                     margin_bottom="10px",
                     margin_top="20px",
+                    color="#000000"
                 ),
                 rx.input(
                     placeholder="Enter your password",
-                    width="300px",
-                    padding="10px",
+                    width="400px",
+                    height="50px",
+                    padding="15px",
+                    font_size="1.2em",
                     type="password",
                     value=State.password,
                     on_change=State.set_password,
                     bg="#FFFFFF",
                     color="#000000",
-                    border="1px solid #000000",
+                    border="2px solid #000000",
                 ),
                 rx.button(
                     "Login",
                     bg="#ADD8E6",
                     border="2px solid #000000",
-                    padding="10px",
-                    margin_top="20px",
-                    on_click=State.login,
+                    padding="25px 30px",
+                    margin_top="30px",
+                    font_size="1.5em",
+                    color="#000000",
                     _hover={"bg": "#ADD8E6", "opacity": 0.8},
+                    _active={"bg": "#ADD8E6", "opacity": 0.9},
+                    on_click=State.login,
                 ),
-                rx.text(State.login_error, color="#FF0000", margin_top="10px"),
-                margin_bottom="30px",
+                rx.text(State.login_error, color="#FF0000", margin_top="20px"),
+                margin_bottom="40px",
             ),
             rx.box(
                 rx.link(
                     "Forgot your password?",
                     href="/forgot-password",
                     color="#0000FF",
-                    margin_bottom="10px",
+                    margin_bottom="15px",
+                    font_size="1.2em",
                 ),
-                rx.link("Create Account", href="/create-account", color="#0000FF"),
+                rx.link("Create Account", href="/create-account", color="#0000FF", font_size="1.2em"),
                 display="flex",
                 flex_direction="column",
                 align_items="center",
             ),
             align_items="center",
             justify_content="center",
-            padding="40px",
+            padding="60px",
             border="2px solid #000000",
-            border_radius="10px",
-            width="400px",
+            border_radius="15px",
+            width="600px",
             bg="#FFFFFF",
+            position="relative",
         ),
         display="flex",
         justify_content="center",
@@ -218,8 +231,6 @@ def profile_page() -> rx.Component:
         position="relative",  # To ensure the log out button stays in place
     )
 
-
-
 # Function to render the record page with AI integration
 def record_page() -> rx.Component:
     return rx.container(
@@ -275,7 +286,7 @@ def record_page() -> rx.Component:
             ),
             display="flex",
             flex_direction="row",
-            align_items="flex-start",
+            align_items="flex_start",
             justify_content="center",
             padding="40px",
             border="2px solid #000000",
@@ -302,13 +313,206 @@ def record_page() -> rx.Component:
         position="relative",
     )
 
-# Main function to render the index page
+# Function to render the create account page
+def create_account_page() -> rx.Component:
+    return rx.container(
+        rx.box(
+            rx.heading(
+                "Create Your Account",
+                font_size="43px",
+                color="#000000",
+                margin_bottom="30px",
+            ),
+            # First Name and Last Name side by side
+            rx.box(
+                rx.box(
+                    rx.text("First Name", font_size="1.5em", margin_bottom="10px", color="#000000"),
+                    rx.input(
+                        placeholder="Enter your first name",
+                        width="330px",
+                        height="65px",
+                        padding="15px",
+                        font_size="1.3em",
+                        bg="#FFFFFF",
+                        color="#000000",
+                        border="2px solid #000000",
+                    ),
+                ),
+                rx.box(
+                    rx.text("Last Name", font_size="1.5em", margin_bottom="10px", color="#000000"),
+                    rx.input(
+                        placeholder="Enter your last name",
+                        width="330px",
+                        height="65px",
+                        padding="15px",
+                        font_size="1.3em",
+                        bg="#FFFFFF",
+                        color="#000000",
+                        border="2px solid #000000",
+                    ),
+                ),
+                display="flex",
+                gap="20px",
+                margin_bottom="20px",
+            ),
+            # Email Address and Phone Number side by side
+            rx.box(
+                rx.box(
+                    rx.text("Email Address", font_size="1.5em", margin_bottom="10px", color="#000000"),
+                    rx.input(
+                        placeholder="Enter your email address",
+                        width="330px",
+                        height="65px",
+                        padding="15px",
+                        font_size="1.3em",
+                        bg="#FFFFFF",
+                        color="#000000",
+                        border="2px solid #000000",
+                    ),
+                ),
+                rx.box(
+                    rx.text("Phone Number", font_size="1.5em", margin_bottom="10px", color="#000000"),
+                    rx.input(
+                        placeholder="Enter your phone number",
+                        width="330px",
+                        height="65px",
+                        padding="15px",
+                        font_size="1.3em",
+                        bg="#FFFFFF",
+                        color="#000000",
+                        border="2px solid #000000",
+                    ),
+                ),
+                display="flex",
+                gap="20px",
+                margin_bottom="20px",
+            ),
+            # Username and Password side by side
+            rx.box(
+                rx.box(
+                    rx.text("Username", font_size="1.5em", margin_bottom="10px", color="#000000"),
+                    rx.input(
+                        placeholder="Choose a username",
+                        width="330px",
+                        height="65px",
+                        padding="15px",
+                        font_size="1.3em",
+                        bg="#FFFFFF",
+                        color="#000000",
+                        border="2px solid #000000",
+                    ),
+                ),
+                rx.box(
+                    rx.text("Password", font_size="1.5em", margin_bottom="10px", color="#000000"),
+                    rx.input(
+                        placeholder="Enter your password",
+                        width="330px",
+                        height="65px",
+                        padding="15px",
+                        type="password",
+                        font_size="1.3em",
+                        bg="#FFFFFF",
+                        color="#000000",
+                        border="2px solid #000000",
+                    ),
+                ),
+                display="flex",
+                gap="20px",
+                margin_bottom="30px",
+            ),
+            # Sign Up Button
+            rx.button(
+                "Sign Up",
+                bg="#28a745",
+                border="2px solid #000000",
+                padding="25px 30px",
+                font_size="1.5em",
+                color="#FFFFFF",
+                _hover={"bg": "#218838", "opacity": 0.8},
+                margin_bottom="20px",
+                on_click=State.submit_signup,
+            ),
+            align_items="center",
+            justify_content="center",
+            padding="60px",
+            border="2px solid #000000",
+            border_radius="15px",
+            width="800px",
+            bg="#FFFFFF",
+            position="relative",
+        ),
+        display="flex",
+        justify_content="center",
+        align_items="center",
+        height="100vh",
+        bg="#ADD8E6",
+    )
+
+# Function to render the healthcare providers page after signup
+def healthcare_providers_page() -> rx.Component:
+    return rx.container(
+        rx.box(
+            # Greeting message
+            rx.heading(
+                f"Hello {State.username}!",
+                font_size="43px",
+                color="#000000",
+                margin_bottom="20px",
+            ),
+            rx.text(
+                "Please list your healthcare providers:",
+                font_size="1.5em",
+                margin_bottom="20px",
+                color="#000000",
+            ),
+            # Simple input form for adding a healthcare provider
+            rx.input(
+                placeholder="Enter healthcare provider name",
+                width="400px",
+                height="50px",
+                padding="15px",
+                font_size="1.3em",
+                margin_bottom="10px",
+                bg="#FFFFFF",
+                color="#000000",
+                border="2px solid #000000",
+            ),
+            rx.button(
+                "Submit",
+                bg="#28a745",  # Green background for the submit button
+                border="2px solid #000000",
+                padding="15px 20px",
+                font_size="1.5em",
+                color="#FFFFFF",
+                _hover={"bg": "#218838", "opacity": 0.8},
+                margin_top="20px",
+            ),
+            align_items="center",
+            justify_content="center",
+            padding="40px",
+            border="2px solid #000000",
+            border_radius="15px",
+            width="700px",
+            bg="#FFFFFF",
+        ),
+        display="flex",
+        justify_content="center",
+        align_items="center",
+        height="100vh",
+        bg="#ADD8E6",
+    )
+
+
+# Updated Main function to render the index page and add new create account page
 def index() -> rx.Component:
     # Always return the login page component
     return login_page()
 
 # Create the Reflex app and add the pages
 app = rx.App()
+# Add the new page to the app
+app.add_page(create_account_page, route="/create-account")
+app.add_page(healthcare_providers_page, route="/healthcare-providers")
 app.add_page(index, route="/", on_load=State.index_on_load)
 app.add_page(profile_page, route="/profile", on_load=State.on_load)
 app.add_page(record_page, route="/record", on_load=State.on_load)
