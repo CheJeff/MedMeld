@@ -2,7 +2,7 @@ import sys
 import os
 
 # Add the path where gemini.py is located to sys.path
-gemini_path = '/home/gabriel_gonzalez29/CalHacks11.0/MedMeld'
+gemini_path = '../'
 if gemini_path not in sys.path:
     sys.path.append(gemini_path)
 
