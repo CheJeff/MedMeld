@@ -33,7 +33,7 @@ Hospital2Agent = Agent(
 
 # Function to read data from hospital1 database
 def read_hospital1_data(patient_name):
-    conn = sqlite3.connect('hospital1_records.db')
+    conn = sqlite3.connect('databases/hospital1_records.db')
     cursor = conn.cursor()
 
     cursor.execute('''
@@ -82,7 +82,7 @@ async def handle_hospital1_query(ctx: Context, sender: str, msg: PatientQuery):
 
 # Function to read data from hospital2 database
 def read_hospital2_data(patient_name):
-    conn = sqlite3.connect('hospital2_records.db')
+    conn = sqlite3.connect('databases/hospital2_records.db')
     cursor = conn.cursor()
 
     cursor.execute('''
