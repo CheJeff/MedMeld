@@ -178,30 +178,35 @@ def profile_page() -> rx.Component:
             # Profile info
             rx.box(
                 bg="#CCCCCC",  # Placeholder for profile picture
-                width="150px",
-                height="150px",
+                width="200px",
+                height="200px",
                 border_radius="50%",  # Make it circular
-                margin_bottom="20px",
+                margin_bottom="30px",
             ),
             rx.text(
                 f"Hi {State.correct_username[:-3]}!",
-                font_size="2em",
-                margin_bottom="20px",
-            ),  # Shows "Hi Jane!"
+                font_size="3em",
+                margin_bottom="30px",
+                text_align="center",
+            ),  # Shows "Hi Jane!" with larger font size
             rx.button(
-                "View Record",
+                "Query Record",
                 bg="#ADD8E6",
                 border="2px solid #000000",
-                padding="10px",
+                padding="25px",
+                font_size="1.5em",
+                margin_top="20px",
                 on_click=lambda: rx.redirect("/record"),  # Redirect to record page
                 _hover={"bg": "#ADD8E6", "opacity": 0.8},
             ),
             align_items="center",
             justify_content="center",
-            padding="40px",
+            display="flex",
+            flex_direction="column",
+            padding="60px",
             border="2px solid #000000",
-            border_radius="10px",
-            width="400px",
+            border_radius="15px",
+            width="500px",
             bg="#FFFFFF",
         ),
         display="flex",
@@ -211,6 +216,8 @@ def profile_page() -> rx.Component:
         bg="#ADD8E6",
         position="relative",  # To ensure the log out button stays in place
     )
+
+
 
 # Function to render the record page with AI integration
 def record_page() -> rx.Component:
